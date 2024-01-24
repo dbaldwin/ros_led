@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.8)
 project(ws281x)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
@@ -9,11 +9,10 @@ option(ROS_WS2811_MOCK_LIB "Use mock ws281x library instead of the real one" OFF
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-  message_generation
-  roscpp
-  led_msgs
-)
+
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(led_msgs REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -53,161 +52,149 @@ find_package(catkin REQUIRED COMPONENTS
 #   FILES
 # )
 
-## Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  SetGamma.srv
-)
-
-## Generate actions in the 'action' folder
-# add_action_files(
+# ## Generate services in the 'srv' folder
+# add_service_files(
 #   FILES
-#   Action1.action
-#   Action2.action
+#   SetGamma.srv
 # )
 
-## Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-  std_msgs  # Or other packages containing msgs
-)
+# ## Generate actions in the 'action' folder
+# # add_action_files(
+# #   FILES
+# #   Action1.action
+# #   Action2.action
+# # )
 
-################################################
-## Declare ROS dynamic reconfigure parameters ##
-################################################
-
-## To declare and build dynamic reconfigure parameters within this
-## package, follow these steps:
-## * In the file package.xml:
-##   * add a build_depend and a exec_depend tag for "dynamic_reconfigure"
-## * In this file (CMakeLists.txt):
-##   * add "dynamic_reconfigure" to
-##     find_package(catkin REQUIRED COMPONENTS ...)
-##   * uncomment the "generate_dynamic_reconfigure_options" section below
-##     and list every .cfg file to be processed
-
-## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
+# ## Generate added messages and services with any dependencies listed here
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs  # Or other packages containing msgs
 # )
 
-###################################
-## catkin specific configuration ##
-###################################
-## The catkin_package macro generates cmake config files for your package
-## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if your package contains header files
-## LIBRARIES: libraries you create in this project that dependent projects also need
-## CATKIN_DEPENDS: catkin_packages dependent projects also need
-## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES ros_ws281x
-  CATKIN_DEPENDS message_generation roscpp led_msgs
-#  DEPENDS system_lib
-)
+# ################################################
+# ## Declare ROS dynamic reconfigure parameters ##
+# ################################################
 
-###########
-## Build ##
-###########
+# ## To declare and build dynamic reconfigure parameters within this
+# ## package, follow these steps:
+# ## * In the file package.xml:
+# ##   * add a build_depend and a exec_depend tag for "dynamic_reconfigure"
+# ## * In this file (CMakeLists.txt):
+# ##   * add "dynamic_reconfigure" to
+# ##     find_package(catkin REQUIRED COMPONENTS ...)
+# ##   * uncomment the "generate_dynamic_reconfigure_options" section below
+# ##     and list every .cfg file to be processed
 
-## Specify additional locations of header files
-## Your package locations should be listed before other locations
-include_directories(
-# include
-  ${catkin_INCLUDE_DIRS}
-)
+# ## Generate dynamic reconfigure parameters in the 'cfg' folder
+# # generate_dynamic_reconfigure_options(
+# #   cfg/DynReconf1.cfg
+# #   cfg/DynReconf2.cfg
+# # )
 
-add_subdirectory(vendor)
 
-## Declare a C++ library
-# add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/ros_ws281x.cpp
+
+# ###########
+# ## Build ##
+# ###########
+
+# ## Specify additional locations of header files
+# ## Your package locations should be listed before other locations
+# include_directories(
+# # include
+#   ${catkin_INCLUDE_DIRS}
 # )
 
-## Add cmake target dependencies of the library
-## as an example, code may need to be generated before libraries
-## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_subdirectory(vendor)
 
-## Declare a C++ executable
-## With catkin_make all packages are built within a single CMake context
-## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}_node src/ws281x_node.cpp)
-target_link_libraries(${PROJECT_NAME}_node rpi_ws281x)
-target_compile_features(${PROJECT_NAME}_node PRIVATE
-        cxx_nonstatic_member_init
-        )
+# ## Declare a C++ library
+# # add_library(${PROJECT_NAME}
+# #   src/${PROJECT_NAME}/ros_ws281x.cpp
+# # )
 
-add_dependencies(${PROJECT_NAME}_node ${PROJECT_NAME}_generate_messages_cpp)
+# ## Add cmake target dependencies of the library
+# ## as an example, code may need to be generated before libraries
+# ## either from message generation or dynamic reconfigure
+# # add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-## Rename C++ executable without prefix
-## The above recommended prefix causes long target names, the following renames the
-## target back to the shorter version for ease of user use
-## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
-# set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
+# ## Declare a C++ executable
+# ## With catkin_make all packages are built within a single CMake context
+# ## The recommended prefix ensures that target names across packages don't collide
+# add_executable(${PROJECT_NAME}_node src/ws281x_node.cpp)
+# target_link_libraries(${PROJECT_NAME}_node rpi_ws281x)
+# target_compile_features(${PROJECT_NAME}_node PRIVATE
+#         cxx_nonstatic_member_init
+#         )
 
-## Add cmake target dependencies of the executable
-## same as for the library above
-add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(${PROJECT_NAME}_node ${PROJECT_NAME}_generate_messages_cpp)
 
-## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}_node
-  ${catkin_LIBRARIES}
-)
+# ## Rename C++ executable without prefix
+# ## The above recommended prefix causes long target names, the following renames the
+# ## target back to the shorter version for ease of user use
+# ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
+# # set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
 
-# Since we're using SUID bits, we need to leave rpath in for stripped binaries
-set_target_properties(${PROJECT_NAME}_node PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
+# ## Add cmake target dependencies of the executable
+# ## same as for the library above
+# add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-#############
-## Install ##
-#############
-
-# all install targets should use catkin DESTINATION variables
-# See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
-
-## Mark executable scripts (Python etc.) for installation
-## in contrast to setup.py, you can choose the destination
-# install(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# ## Specify libraries to link a library or executable target against
+# target_link_libraries(${PROJECT_NAME}_node
+#   ${catkin_LIBRARIES}
 # )
 
-## Mark executables and/or libraries for installation
-install(TARGETS ${PROJECT_NAME}_node
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+# # Since we're using SUID bits, we need to leave rpath in for stripped binaries
+# set_target_properties(${PROJECT_NAME}_node PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-## Mark cpp header files for installation
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
+# #############
+# ## Install ##
+# #############
+
+# # all install targets should use catkin DESTINATION variables
+# # See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
+
+# ## Mark executable scripts (Python etc.) for installation
+# ## in contrast to setup.py, you can choose the destination
+# # install(PROGRAMS
+# #   scripts/my_python_script
+# #   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# # )
+
+# ## Mark executables and/or libraries for installation
+# install(TARGETS ${PROJECT_NAME}_node
+#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
-## Mark other files for installation (e.g. launch and bag files, etc.)
-install(FILES
-  launch/example.launch
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
-)
+# ## Mark cpp header files for installation
+# # install(DIRECTORY include/${PROJECT_NAME}/
+# #   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+# #   FILES_MATCHING PATTERN "*.h"
+# #   PATTERN ".svn" EXCLUDE
+# # )
 
-# Prepare node for packaging
-# FIXME: better checks for packaging?
-if("${CATKIN_BUILD_BINARY_PACKAGE}" EQUAL "1")
-  message(STATUS "Building for ROS distro: $ENV{ROS_DISTRO}")
-  set(ROSDISTRO $ENV{ROS_DISTRO})
+# ## Mark other files for installation (e.g. launch and bag files, etc.)
+# install(FILES
+#   launch/example.launch
+#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+# )
 
-  configure_file(scripts/postinst.in postinst)
+# # Prepare node for packaging
+# # FIXME: better checks for packaging?
+# if("${CATKIN_BUILD_BINARY_PACKAGE}" EQUAL "1")
+#   message(STATUS "Building for ROS distro: $ENV{ROS_DISTRO}")
+#   set(ROSDISTRO $ENV{ROS_DISTRO})
 
-  install(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/postinst
-    DESTINATION /DEBIAN
-    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
-  )
-endif()
+#   configure_file(scripts/postinst.in postinst)
+
+#   install(FILES
+#     ${CMAKE_CURRENT_BINARY_DIR}/postinst
+#     DESTINATION /DEBIAN
+#     PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+#   )
+# endif()
+
+ament_package()
 
 #############
 ## Testing ##
