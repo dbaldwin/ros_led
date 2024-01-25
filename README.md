@@ -29,3 +29,8 @@ sudo chmod +s $(catkin_find ws281x ws281x_node)
 
 ros2 interface show led_msgs/msg/LEDState
 ros2 interface show led_msgs/srv/SetLED
+ros2 interface show ws281x/srv/SetGamma
+
+show all messages and services
+
+ros2 interface list

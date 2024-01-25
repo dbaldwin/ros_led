@@ -9,11 +9,11 @@
  * copies or substantial portions of the Software.
  */
 
-#include <ros/ros.h>
+#include "rclcpp/rclcpp.hpp"
 
-#include <led_msgs/SetLEDs.h>
-#include <led_msgs/LEDStateArray.h>
-#include <ws281x/SetGamma.h>
+#include <led_msgs/srv/set_leds.hpp>
+#include <led_msgs/msg/led_state_array.hpp>
+#include <ws281x/srv/set_gamma.hpp>
 
 #include <ws2811.h>
 #include <ros/console.h>

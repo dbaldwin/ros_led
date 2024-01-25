@@ -14,10 +14,10 @@ find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/LEDState.msg"
-  "msg/LEDStateArray.msg"
-  "srv/SetLED.srv"
-  "srv/SetLEDs.srv"
+  "msg/LedState.msg"
+  "msg/LedStateArray.msg"
+  "srv/SetLed.srv"
+  "srv/SetLeds.srv"
  )
 
 if(BUILD_TESTING)
