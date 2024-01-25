@@ -31,7 +31,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 #   ${catkin_INCLUDE_DIRS}
 # )
 
-# add_subdirectory(vendor)
+add_subdirectory(vendor)
 
 # ## Declare a C++ library
 # # add_library(${PROJECT_NAME}
@@ -52,11 +52,11 @@ ament_target_dependencies(${PROJECT_NAME}_node rclcpp led_msgs)
 # The following line is necessary to link the SetGamme service file from the current package
 rosidl_target_interfaces(${PROJECT_NAME}_node ${PROJECT_NAME} "rosidl_typesupport_cpp")
 
-# install(TARGETS
-#     ${PROJECT_NAME}_node
-#     DESTINATION lib/${PROJECT_NAME})
+install(TARGETS
+    ${PROJECT_NAME}_node
+    DESTINATION lib/${PROJECT_NAME})
 
-#ament_target_dependencies(${PROJECT_NAME}_node rpi_ws281x)
+target_link_libraries(${PROJECT_NAME}_node rpi_ws281x)
 
 
 # target_compile_features(${PROJECT_NAME}_node PRIVATE

@@ -16,7 +16,6 @@
 #include <ws281x/srv/set_gamma.hpp>
 
 #include <ws2811.h>
-#include <ros/console.h>
 #include <unordered_map>
 #include <signal.h>
 
@@ -59,7 +58,7 @@ std::unordered_map<std::string, uint64_t> ws2811_types = {
 ws2811_t led_string;
 
 ros::Publisher led_state_pub;
-led_msgs::LEDStateArray strip_state;
+led_msgs::msg::LedStateArray strip_state;
 
 void publishLedState()
 {
@@ -74,7 +73,7 @@ void publishLedState()
 	led_state_pub.publish(strip_state);
 }
 
-bool setGamma(ws281x::SetGamma::Request& req, ws281x::SetGamma::Response& resp)
+bool setGamma(ws281x::srv::SetGamma::Request& req, ws281x::srv::SetGamma::Response& resp)
 {
 	for(int i = 0; i < 255; ++i) {
 		led_string.channel[0].gamma[i] = req.gamma[i];
@@ -83,12 +82,12 @@ bool setGamma(ws281x::SetGamma::Request& req, ws281x::SetGamma::Response& resp)
 	return true;
 }
 
-bool setLeds(led_msgs::SetLEDs::Request& req, led_msgs::SetLEDs::Response& resp)
+bool setLeds(led_msgs::srv::SetLeds::Request& req, led_msgs::srv::SetLeds::Response& resp)
 {
 	// check validness
 	for(auto const& led : req.leds) {
 		if (led.index < 0 || led.index >= strip_state.leds.size()) {
-			ROS_ERROR("[ws281x] LED index out of bounds: %d", led.index);
+			RCLCPP_ERROR("[ws281x] LED index out of bounds: %d", led.index);
 			resp.message = "LED index out of bounds: " + std::to_string(led.index);
 			return true;
 		}
@@ -104,7 +103,7 @@ bool setLeds(led_msgs::SetLEDs::Request& req, led_msgs::SetLEDs::Response& resp)
 	ws2811_return_t ret;
 	if ((ret = ws2811_render(&led_string)) != WS2811_SUCCESS) {
 		resp.message = ws2811_get_return_t_str(ret);
-		ROS_ERROR_THROTTLE(1, "[ws281x] Could not set LED colors: %s", resp.message.c_str());
+		RCLCPP_ERROR_THROTTLE(1, "[ws281x] Could not set LED colors: %s", resp.message.c_str());
 		resp.success = false;
 	} else {
 		resp.success = true;
@@ -122,12 +121,12 @@ void cleanup(int signal)
 		ws2811_render(&led_string);
 	}
 	ws2811_fini(&led_string);
-	ros::shutdown();
+	rclcpp::shutdown();
 }
 
 int main(int argc, char** argv)
 {
-	ros::init(argc, argv, "ws281x");
+	rclcpp::init(argc, argv, "ws281x");
 	ros::NodeHandle nh, nh_priv("~");
 
 	int param_freq;
@@ -152,12 +151,12 @@ int main(int argc, char** argv)
 	if (strip_type_it != ws2811_types.end()) {
 		param_strip_type = strip_type_it->second;
 	} else {
-		ROS_WARN("[ws281x] Unknown strip type: %s", strip_type_str.c_str());
+		RCLCPP_WARN("[ws281x] Unknown strip type: %s", strip_type_str.c_str());
 		param_strip_type = WS2811_STRIP_GBR;
 	}
 
 	if (param_freq < 0) {
-		ROS_WARN("[ws281x] Target_frequency out of range, resetting to default");
+		RCLCPP_WARN("[ws281x] Target_frequency out of range, resetting to default");
 		led_string.freq = (uint32_t)WS2811_TARGET_FREQ;
 	} else {
 		led_string.freq = (uint32_t)param_freq;
@@ -178,7 +177,7 @@ int main(int argc, char** argv)
 
 	ws2811_return_t ret;
 	if ((ret = ws2811_init(&led_string)) != WS2811_SUCCESS) {
-		ROS_FATAL("[ws281x] native library init failed: %s", ws2811_get_return_t_str(ret));
+		RCLCPP_FATAL("[ws281x] native library init failed: %s", ws2811_get_return_t_str(ret));
 		exit(1);
 	}
 	signal(SIGINT, cleanup);
@@ -189,10 +188,10 @@ int main(int argc, char** argv)
 	auto srv_gamma = nh_priv.advertiseService("set_gamma", setGamma);
 	auto srv_leds = nh_priv.advertiseService("set_leds", setLeds);
 
-	led_state_pub = nh_priv.advertise<led_msgs::LEDStateArray>("state", 1, true);
+	led_state_pub = nh_priv.advertise<led_msgs::msg::LedStateArray>("state", 1, true);
 	publishLedState();
 
-	ros::spin();
+	rclcpp::spin();
 
 	return 0;
 }
