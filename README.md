@@ -34,3 +34,8 @@ ros2 interface show ws281x/srv/SetGamma
 show all messages and services
 
 ros2 interface list
+
+# Permissions
+
+sudo adduser droneblocks kmem
+exec newgrp kmem

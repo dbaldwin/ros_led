@@ -1,16 +1,9 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>ws281x</name>
-  <version>0.0.13</version>
+  <version>0.0.1</version>
   <description>ROS node for rpi_ws281x LED strip driver</description>
-  <maintainer email="okalachev@gmail.com">Oleg Kalachev</maintainer>
-  <license>MIT</license>
   <license>BSD</license>
-
-  <url type="website">https://github.com/CopterExpress/ros_led</url>
-
-  <author email="sfalexrog@gmail.com">Alexey Rogachevskiy</author>
-  <author email="okalachev@gmail.com">Oleg Kalachev</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   
@@ -19,6 +12,7 @@
   <build_export_depend>rclcpp</build_export_depend>
   <exec_depend>rclcpp</exec_depend>
   <depend>led_msgs</depend>
+  <depend>std_msgs</depend>
 
   <build_depend>rosidl_default_generators</build_depend>
   <exec_depend>rosidl_default_runtime</exec_depend>
